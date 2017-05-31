@@ -82,7 +82,6 @@ function facebook_block_view($block_key)
 function _facebook_generate($fb)
 {
     $return = '';
-    dsm($fb);
     if (isset($fb->data)) {
         $return .= '<div class="sidebar-home-twitter"><div class="panel panel-primary"><div class="panel-heading"><h6 class="panel-title with-icon"><a href="' . variable_get('facebook_page') . '" target="_blank">SUIVEZ NOUS <i>SUR FACEBOOK</i></a></h6></div><div class="panel-body scrolly scrollbar-outer">';
         foreach ($fb->data as $post) {
@@ -94,14 +93,16 @@ function _facebook_generate($fb)
             } else {
                 $message .= "Découvrez le nouvel événement mis en ligne sur notre page";
             }
-            $prepic = explode("/", $post->picture);
-            $jsonimg = json_decode(@file_get_contents('https://graph.facebook.com/v2.9/'.$post->id.'/attachments?format=json&access_token=' . variable_get('facebook_app_id') . '|' . variable_get('facebook_app_secret')));
+            $jsonimg = json_decode(@file_get_contents('https://graph.facebook.com/v2.9/' . $post->id . '/attachments?format=json&access_token=' . variable_get('facebook_app_id') . '|' . variable_get('facebook_app_secret')));
 
             $date = format_date(strtotime($post->created_time));
             $return .= '<div class="facebook_feed">';
             $return .= '<div class="facebook_feed_date">' . $date . '</div>';
 
-            $return .= '<a href="' . variable_get('facebook_page') . '" target="_blank">' . $message . '<br><img src="' . $jsonimg->data[0]->media->image->src. '" class="img-responsive"/> </a>';
+            $return .= '<a href="' . variable_get('facebook_page') . '" target="_blank">' . $message;
+            if (isset($jsonimg->data[0]->media->image->src))
+                $return .= '<br><img src="' . $jsonimg->data[0]->media->image->src . '" class="img-responsive"/>';
+            $return .= '</a>';
 
             $return .= '</div>';
         }
