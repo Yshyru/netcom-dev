@@ -1,0 +1,4 @@
+name = Facebook page 
+description = Get page feed 
+package = Facebook
+core = 7.x 
